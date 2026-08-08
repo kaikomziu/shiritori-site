@@ -220,8 +220,13 @@ button {
   gap: 8px;
   margin-top: 12px;
 }
-#form-word input { flex: 1; }
-#form-word button { white-space: nowrap; }
+#form-word input { flex: 1; min-width: 0; }
+#form-word button {
+  white-space: nowrap;
+  width: auto;
+  flex: 0 0 auto;
+  margin-top: 0;
+}
 
 @media (max-width: 520px) {
   .game-main { flex-direction: column; }
