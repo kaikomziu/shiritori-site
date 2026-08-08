@@ -1,0 +1,208 @@
+:root {
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --primary: #4f6df5;
+  --primary-dark: #3a54d1;
+  --text: #23262f;
+  --sub: #6b7280;
+  --border: #e3e6ef;
+  --danger: #e0435c;
+  --ok: #2fbf71;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Hiragino Sans", "Yu Gothic", "Segoe UI", sans-serif;
+  background: linear-gradient(180deg, #eef1fb, #f9fafc);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+#app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+}
+
+.hidden { display: none !important; }
+
+h1 { font-size: 1.8rem; margin-bottom: 4px; text-align: center; }
+h2 { text-align: center; }
+.sub { color: var(--sub); text-align: center; margin-top: 0; font-size: 0.9rem; }
+
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(30, 40, 90, 0.08);
+  margin-top: 16px;
+}
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--sub);
+  margin: 12px 0 4px;
+}
+
+input[type="text"], input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-size: 1rem;
+  background: #fafbff;
+}
+input:focus { outline: 2px solid var(--primary); border-color: transparent; }
+
+button {
+  cursor: pointer;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  border: none;
+  padding: 10px 16px;
+}
+
+.primary {
+  background: var(--primary);
+  color: white;
+  width: 100%;
+  margin-top: 16px;
+  font-weight: 600;
+  padding: 12px;
+}
+.primary:hover { background: var(--primary-dark); }
+.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ghost {
+  background: transparent;
+  color: var(--sub);
+  border: 1px solid var(--border);
+  display: block;
+  margin: 20px auto 0;
+}
+
+.tabs { display: flex; gap: 8px; margin-top: 16px; }
+.tab {
+  flex: 1;
+  background: #eef0f7;
+  color: var(--sub);
+  padding: 10px;
+  font-weight: 600;
+  border-radius: 10px;
+}
+.tab.active { background: var(--primary); color: white; }
+
+.error {
+  color: var(--danger);
+  min-height: 1.2em;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.code {
+  letter-spacing: 4px;
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.player-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+.player-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(30,40,90,0.06);
+}
+.player-list li.dead { opacity: 0.4; text-decoration: line-through; }
+.player-list li.turn { border: 2px solid var(--primary); }
+.player-list .badge {
+  font-size: 0.75rem;
+  color: var(--sub);
+}
+.player-list.side { max-width: 220px; }
+
+.game-top { margin-top: 8px; }
+.turn-banner {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 10px;
+  background: var(--card);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(30,40,90,0.06);
+}
+#timer-bar-wrap {
+  height: 6px;
+  background: var(--border);
+  border-radius: 4px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+#timer-bar {
+  height: 100%;
+  width: 100%;
+  background: var(--ok);
+  transition: width 0.25s linear, background 0.25s linear;
+}
+
+.game-main {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.board { flex: 1; min-width: 260px; }
+
+.last-word {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(30,40,90,0.06);
+}
+
+.history {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  max-height: 240px;
+  overflow-y: auto;
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(30,40,90,0.06);
+}
+.history li {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+.history li:last-child { border-bottom: none; }
+.history .who { color: var(--sub); margin-right: 6px; }
+.history li.system { color: var(--danger); font-style: italic; }
+
+#form-word {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+#form-word input { flex: 1; }
+#form-word button { white-space: nowrap; }
+
+@media (max-width: 520px) {
+  .game-main { flex-direction: column; }
+  .player-list.side { max-width: 100%; }
+}

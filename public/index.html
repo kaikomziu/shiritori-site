@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>しりとりオンライン</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ホーム画面 -->
+  <section id="screen-home" class="screen">
+    <h1>🔤 しりとりオンライン</h1>
+    <p class="sub">みんなでリアルタイムしりとり対戦</p>
+
+    <div class="card">
+      <label>ニックネーム</label>
+      <input id="input-name" type="text" maxlength="16" placeholder="なまえ" />
+
+      <div class="tabs">
+        <button id="tab-create" class="tab active">部屋を作る</button>
+        <button id="tab-join" class="tab">部屋に入る</button>
+      </div>
+
+      <div id="pane-create" class="pane">
+        <label>制限時間(秒/1手)</label>
+        <input id="input-timelimit" type="number" min="5" max="120" value="20" />
+        <button id="btn-create" class="primary">部屋を作成</button>
+      </div>
+
+      <div id="pane-join" class="pane hidden">
+        <label>部屋コード</label>
+        <input id="input-code" type="text" maxlength="4" placeholder="例: A3F9" style="text-transform:uppercase" />
+        <button id="btn-join" class="primary">参加する</button>
+      </div>
+
+      <p id="home-error" class="error"></p>
+    </div>
+  </section>
+
+  <!-- ロビー画面 -->
+  <section id="screen-lobby" class="screen hidden">
+    <h2>部屋コード: <span id="lobby-code" class="code"></span></h2>
+    <p class="sub">このコードを友達に伝えて参加してもらおう</p>
+    <ul id="lobby-players" class="player-list"></ul>
+    <button id="btn-start" class="primary hidden">ゲーム開始</button>
+    <p id="lobby-wait" class="sub">ホストの開始を待っています…</p>
+    <button id="btn-leave-lobby" class="ghost">退出</button>
+  </section>
+
+  <!-- ゲーム画面 -->
+  <section id="screen-game" class="screen hidden">
+    <div class="game-top">
+      <div id="turn-banner" class="turn-banner">-</div>
+      <div id="timer-bar-wrap"><div id="timer-bar"></div></div>
+    </div>
+
+    <div class="game-main">
+      <ul id="players-panel" class="player-list side"></ul>
+
+      <div class="board">
+        <div id="last-word" class="last-word">さいしょの単語をどうぞ</div>
+        <ul id="history-list" class="history"></ul>
+        <form id="form-word" autocomplete="off">
+          <input id="input-word" type="text" placeholder="ひらがなで入力(カタカナも可)" autocomplete="off" />
+          <button type="submit" class="primary">送信</button>
+        </form>
+        <p id="game-error" class="error"></p>
+      </div>
+    </div>
+    <button id="btn-leave-game" class="ghost">退出</button>
+  </section>
+
+  <!-- 結果画面 -->
+  <section id="screen-result" class="screen hidden">
+    <h2 id="result-message">ゲーム終了</h2>
+    <ul id="result-players" class="player-list"></ul>
+    <button id="btn-restart" class="primary hidden">もう一度プレイ</button>
+    <button id="btn-leave-result" class="ghost">部屋を出る</button>
+  </section>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="client.js"></script>
+</body>
+</html>
