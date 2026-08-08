@@ -3,19 +3,22 @@ const socket = io();
 let selfId = null;
 let currentState = null;
 
-// ---------- 背景に辞書の単語を敷き詰める ----------
+// ---------- 背景に辞書の単語を敷き詰める / デバッグ検索用に保持 ----------
+let ALL_WORDS = [];
 fetch('/api/words')
   .then((r) => r.json())
   .then((words) => {
-    // 表示のたびに並びが変わるようシャッフル
-    for (let i = words.length - 1; i > 0; i--) {
+    ALL_WORDS = words;
+    // 表示のたびに並びが変わるようシャッフル(コピーを使う。ALL_WORDSは検索用に元の順のまま)
+    const shuffled = words.slice();
+    for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [words[i], words[j]] = [words[j], words[i]];
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     const bg = document.getElementById('word-bg');
     if (!bg) return;
     const frag = document.createDocumentFragment();
-    for (const w of words) {
+    for (const w of shuffled) {
       const span = document.createElement('span');
       span.textContent = w;
       frag.appendChild(span);
@@ -30,6 +33,7 @@ const screens = {
   lobby: document.getElementById('screen-lobby'),
   game: document.getElementById('screen-game'),
   result: document.getElementById('screen-result'),
+  debug: document.getElementById('screen-debug'),
 };
 function showScreen(name) {
   for (const key in screens) screens[key].classList.toggle('hidden', key !== name);
@@ -69,6 +73,77 @@ document.getElementById('btn-join').onclick = () => {
   const code = document.getElementById('input-code').value.trim().toUpperCase();
   if (!code) { homeError.textContent = '部屋コードを入力してください'; return; }
   socket.emit('joinRoom', { name, code });
+};
+
+// ---------- デバッグ: 単語検索モード(合言葉: karwak) ----------
+const DEBUG_PASSWORD = 'karwak';
+const debugLink = document.getElementById('debug-link');
+const debugGate = document.getElementById('debug-gate');
+const debugPassword = document.getElementById('debug-password');
+const debugGateError = document.getElementById('debug-gate-error');
+
+debugLink.onclick = () => {
+  debugGate.classList.toggle('hidden');
+  if (!debugGate.classList.contains('hidden')) debugPassword.focus();
+};
+
+function tryUnlockDebug() {
+  debugGateError.textContent = '';
+  if (debugPassword.value === DEBUG_PASSWORD) {
+    debugPassword.value = '';
+    debugGate.classList.add('hidden');
+    showScreen('debug');
+    document.getElementById('debug-total').textContent = `辞書: ${ALL_WORDS.length} 語`;
+    document.getElementById('debug-search').value = '';
+    document.getElementById('debug-results').innerHTML = '';
+    document.getElementById('debug-count').textContent = '';
+  } else {
+    debugGateError.textContent = '合言葉が違います';
+  }
+}
+document.getElementById('debug-unlock').onclick = tryUnlockDebug;
+debugPassword.onkeydown = (e) => { if (e.key === 'Enter') tryUnlockDebug(); };
+
+document.getElementById('btn-debug-back').onclick = () => showScreen('home');
+
+const debugSearchInput = document.getElementById('debug-search');
+const debugResultsList = document.getElementById('debug-results');
+const debugCountEl = document.getElementById('debug-count');
+debugSearchInput.oninput = () => {
+  const q = debugSearchInput.value.trim();
+  debugResultsList.innerHTML = '';
+  if (!q) { debugCountEl.textContent = ''; return; }
+  const matches = ALL_WORDS.filter((w) => w.includes(q));
+  debugCountEl.textContent = `${matches.length} 件ヒット(先頭100件を表示)`;
+  const frag = document.createDocumentFragment();
+  for (const w of matches.slice(0, 100)) {
+    const li = document.createElement('li');
+    li.textContent = w;
+    frag.appendChild(li);
+  }
+  debugResultsList.appendChild(frag);
+};
+
+const debugCheckInput = document.getElementById('debug-check-word');
+const debugCheckResult = document.getElementById('debug-check-result');
+debugCheckInput.onkeydown = (e) => {
+  if (e.key !== 'Enter') return;
+  const w = debugCheckInput.value.trim();
+  if (!w) return;
+  debugCheckResult.textContent = '確認中…';
+  fetch('/api/debug/check?word=' + encodeURIComponent(w))
+    .then((r) => r.json())
+    .then((data) => {
+      if (data.error) { debugCheckResult.textContent = data.error; return; }
+      debugCheckResult.textContent =
+        `正規化後: ${data.word}\n` +
+        `ひらがなとして有効: ${data.validChars ? 'はい' : 'いいえ'}\n` +
+        `辞書に登録: ${data.inDictionary ? '✅ あり' : '❌ なし'}\n` +
+        `実効・最初の文字: ${data.effectiveFirst ?? '-'}\n` +
+        `実効・最後の文字: ${data.effectiveLast ?? '-'}\n` +
+        `「ん」で終わる: ${data.endsWithN ? 'はい(脱落ワード)' : 'いいえ'}`;
+    })
+    .catch(() => { debugCheckResult.textContent = '通信エラー'; });
 };
 
 // ---------- ロビー画面 ----------

@@ -108,6 +108,26 @@ function endsWithN(word) {
   return chars[chars.length - 1] === 'ん';
 }
 
+// デバッグ用単語検索モード(ホームから合言葉「karwak」で入れる)
+// 辞書登録の有無・つながり判定(先頭/末尾の実効文字)を確認できる
+app.get('/api/debug/check', (req, res) => {
+  const raw = (req.query.word || '').toString();
+  const word = normalizeInput(raw);
+  if (!word) {
+    res.status(400).json({ error: '単語を指定してください' });
+    return;
+  }
+  const validChars = /^[ぁ-んー]+$/.test(word);
+  res.json({
+    word,
+    validChars,
+    inDictionary: WORD_SET.has(word),
+    effectiveFirst: validChars ? effectiveFirstChar(word) : null,
+    effectiveLast: validChars ? effectiveLastChar(word) : null,
+    endsWithN: validChars ? endsWithN(word) : null,
+  });
+});
+
 // ---------- ルーム管理 ----------
 
 /**

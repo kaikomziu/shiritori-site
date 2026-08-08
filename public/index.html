@@ -38,6 +38,34 @@
 
       <p id="home-error" class="error"></p>
     </div>
+
+    <button id="debug-link" class="debug-link" type="button">🔧</button>
+    <div id="debug-gate" class="debug-gate hidden">
+      <input id="debug-password" type="password" placeholder="合言葉" />
+      <button id="debug-unlock" class="ghost" type="button">開く</button>
+      <p id="debug-gate-error" class="error"></p>
+    </div>
+  </section>
+
+  <!-- デバッグ: 単語検索モード -->
+  <section id="screen-debug" class="screen hidden">
+    <h2>🔍 単語検索モード(デバッグ)</h2>
+    <p class="sub" id="debug-total"></p>
+
+    <div class="card">
+      <label>辞書を検索(部分一致)</label>
+      <input id="debug-search" type="text" placeholder="ひらがなの一部を入力" />
+      <p class="sub" id="debug-count"></p>
+      <ul id="debug-results" class="history"></ul>
+    </div>
+
+    <div class="card">
+      <label>つながり判定チェック</label>
+      <input id="debug-check-word" type="text" placeholder="単語を入力してEnter(例: こんてぃにゅー)" />
+      <div id="debug-check-result" class="sub"></div>
+    </div>
+
+    <button id="btn-debug-back" class="ghost">ホームに戻る</button>
   </section>
 
   <!-- ロビー画面 -->
