@@ -4,6 +4,9 @@ let selfId = null;
 let currentState = null;
 
 // ---------- 背景に辞書の単語を敷き詰める / デバッグ検索用に保持 ----------
+// 辞書は数万語規模になり得るため、背景表示は描画負荷を抑えるためサンプリングする
+// (検索・つながり判定チェックなど機能面では ALL_WORDS に辞書全体が入る)
+const WORD_BG_MAX = 4000;
 let ALL_WORDS = [];
 fetch('/api/words')
   .then((r) => r.json())
@@ -15,10 +18,11 @@ fetch('/api/words')
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
+    const sample = shuffled.slice(0, WORD_BG_MAX);
     const bg = document.getElementById('word-bg');
     if (!bg) return;
     const frag = document.createDocumentFragment();
-    for (const w of shuffled) {
+    for (const w of sample) {
       const span = document.createElement('span');
       span.textContent = w;
       frag.appendChild(span);

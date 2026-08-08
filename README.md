@@ -92,9 +92,16 @@ npm start
 
 ## 辞書データの出典
 
-`data/words.txt` の一部(JLPT N1〜N5相当の語彙、約6900語)は、オープンソースの語彙データ
-[elzup/jlpt-word-list](https://github.com/elzup/jlpt-word-list)(MITライセンス)の読み仮名を
-ひらがなに正規化して取り込んだものです。それ以外は手動で追加した一般的な単語・固有名詞です。
+`data/words.txt` は以下のデータを組み合わせています。
+
+- 手動で追加した一般的な単語・固有名詞(動物/食べ物/地名/ゲームタイトルなど)
+- [elzup/jlpt-word-list](https://github.com/elzup/jlpt-word-list)(MITライセンス)由来の
+  JLPT N1〜N5相当語彙の読み仮名
+- [scriptin/jmdict-simplified](https://github.com/scriptin/jmdict-simplified)(JMdict、
+  EDRDGライセンス)の「common(よく使われる語)」に分類された語の読み仮名
+
+いずれも読み仮名(単語そのもの)のみを抽出して取り込んでおり、各データセットの語釈・用例などは
+含んでいません。
 
 ## 単語リストの追加方法
 
