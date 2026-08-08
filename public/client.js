@@ -3,6 +3,27 @@ const socket = io();
 let selfId = null;
 let currentState = null;
 
+// ---------- 背景に辞書の単語を敷き詰める ----------
+fetch('/api/words')
+  .then((r) => r.json())
+  .then((words) => {
+    // 表示のたびに並びが変わるようシャッフル
+    for (let i = words.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [words[i], words[j]] = [words[j], words[i]];
+    }
+    const bg = document.getElementById('word-bg');
+    if (!bg) return;
+    const frag = document.createDocumentFragment();
+    for (const w of words) {
+      const span = document.createElement('span');
+      span.textContent = w;
+      frag.appendChild(span);
+    }
+    bg.appendChild(frag);
+  })
+  .catch(() => {});
+
 // ---------- 画面切り替え ----------
 const screens = {
   home: document.getElementById('screen-home'),

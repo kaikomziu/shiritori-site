@@ -29,6 +29,11 @@ function loadWords() {
 let WORD_SET = loadWords();
 console.log(`辞書を読み込みました: ${WORD_SET.size} 語`);
 
+// 背景演出用: 辞書の全単語をそのまま返す
+app.get('/api/words', (req, res) => {
+  res.json(Array.from(WORD_SET));
+});
+
 // ---------- かな正規化ユーティリティ ----------
 
 // 全角カタカナ -> ひらがな
